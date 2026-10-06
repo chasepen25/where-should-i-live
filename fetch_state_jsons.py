@@ -3,11 +3,15 @@ import os
 from pathlib import Path
 
 import requests
+from dotenv import load_dotenv
 
 
+load_dotenv()
 api_key = os.environ.get("CENSUS_API_KEY")
 if not api_key:
-    raise SystemExit("Set the CENSUS_API_KEY environment variable before running this script.")
+    raise SystemExit(
+        "CENSUS_API_KEY is missing. Copy .env.example to .env and add your Census API key."
+    )
 
 output_dir = Path("data/states")
 output_dir.mkdir(parents=True, exist_ok=True)
