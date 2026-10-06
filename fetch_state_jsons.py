@@ -24,17 +24,24 @@ state_codes = [
 ]
 
 for number in state_codes:
-    response = requests.get(
-        "https://api.census.gov/data/2024/acs/acs5",
-        params={
-            "get": "NAME,B01003_001E,B19013_001E,B25064_001E",
-            "for": f"state:{number:02d}",
-            "key": api_key,
-        },
-        timeout=30,
-    )
+    try:
+        response = requests.get(
+            "https://api.census.gov/data/2024/acs/acs5",
+            params={
+                "get": "NAME,B01003_001E,B19013_001E,B25064_001E",
+                "for": f"state:{number:02d}",
+                "key": api_key,
+            },
+            timeout=30,
+        )
+        response.raise_for_status()
+    except requests.RequestException as exc:
+        status = exc.response.status_code if exc.response is not None else "network error"
+        raise SystemExit(
+            f"Census request failed for state:{number:02d} ({status}). "
+            "Check the API key and connection."
+        ) from None
 
-    response.raise_for_status()
     data = response.json()
 
     (output_dir / f"{number:02d}.json").write_text(
