@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4ef">
+  <title>Where Should I Live?</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='Script.js') }}" defer></script>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">A little help finding your next place</p>
+    <h1>Where should<br>you live?</h1>
+    <p class="intro">Start with your budget. We’ll show you a few places to explore.</p>
+    <form id="rent-form">
+      <label for="max-rent">What is your maximum monthly rent?</label>
+      <div>
+        <span aria-hidden="true">$</span>
+        <input
+          id="max-rent"
+          name="max-rent"
+          type="number"
+          min="0"
+          step="50"
+          value="1500"
+          placeholder="1500"
+          required
+        >
+      </div>
+      <button type="submit">Find my places <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="disclaimer">Demo estimates for testing only. Rents are illustrative, not live listings.</p>
+    <section id="results" aria-live="polite" aria-busy="false"></section>
+  </main>
+</body>
+</html>
