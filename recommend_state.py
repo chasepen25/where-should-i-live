@@ -12,9 +12,15 @@ for path in sorted(data_dir.glob("*.json")):
 
     headers, row = response[0], response[1]
     values = dict(zip(headers, row))
-    population = int(values["B01003_001E"])
-    median_income = int(values["B19013_001E"])
-    median_rent = int(values["B25064_001E"])
+    try:
+        population = int(values["B01003_001E"])
+        median_income = int(values["B19013_001E"])
+        median_rent = int(values["B25064_001E"])
+    except (KeyError, TypeError, ValueError):
+        # ACS can use negative sentinel values when a measure is unavailable.
+        continue
+    if population < 0 or median_income <= 0 or median_rent < 0:
+        continue
 
     # Compare annual median rent with median household income; lower is more affordable.
     rent_share = median_rent * 12 / median_income
