@@ -10,16 +10,22 @@
 </head>
 <body>
   <main>
-    <p class="eyebrow">A little help finding your next place</p>
+    <p class="eyebrow"><span class="eyebrow-mark" aria-hidden="true">✳</span> A little help finding your next place</p>
     <h1>Where should<br>you live?</h1>
-    <p class="intro">Start with your budget. We’ll show you a few places to explore.</p>
+    <p class="intro">Share your housing plans and budget to find states worth exploring.</p>
     <form id="rent-form">
-      <label for="max-rent">What is your maximum monthly rent?</label>
+      <p class="form-heading">A few details to get started</p>
+      <label for="housing-plan">Are you looking to rent or buy?</label>
+      <select id="housing-plan" name="housing-plan" required>
+        <option value="rent">Rent</option>
+        <option value="buy">Buy</option>
+      </select>
+      <label id="budget-label" for="housing-budget">What is your maximum monthly rent?</label>
       <div>
         <span aria-hidden="true">$</span>
         <input
-          id="max-rent"
-          name="max-rent"
+          id="housing-budget"
+          name="housing-budget"
           type="number"
           min="0"
           step="50"
@@ -28,10 +34,16 @@
           required
         >
       </div>
+      <label for="household-income">What is your annual household income?</label>
+      <div>
+        <span aria-hidden="true">$</span>
+        <input id="household-income" name="household-income" type="number" min="0" step="1000" value="75000" placeholder="75000" required>
+      </div>
       <button type="submit">Find my places <span aria-hidden="true">→</span></button>
     </form>
     <p class="disclaimer">Demo estimates for testing only. Rents are illustrative, not live listings.</p>
     <section id="results" aria-live="polite" aria-busy="false"></section>
+    <footer class="page-footer">A thoughtful next step toward feeling at home.</footer>
   </main>
 </body>
 </html>

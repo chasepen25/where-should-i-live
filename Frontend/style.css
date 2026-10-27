@@ -11,6 +11,8 @@ form { background: #fff; border: 1px solid #e3e5dd; border-radius: 16px; padding
 label { display: block; font-weight: 600; margin-bottom: 12px; }
 form > div { display: flex; align-items: center; border: 1px solid #cfd8cf; border-radius: 9px; padding: 0 14px; height: 54px; color: #728176; }
 input { border: 0; outline: 0; width: 100%; padding: 12px 8px; background: transparent; color: #20352c; font: inherit; font-size: 1.05rem; }
+select { display: block; width: 100%; height: 54px; margin: 0 0 20px; padding: 0 14px; border: 1px solid #cfd8cf; border-radius: 9px; background: #fff; color: #20352c; font: inherit; font-size: 1rem; }
+select:focus { outline: 3px solid #d8e7d8; border-color: #557d60; }
 form > div:focus-within { outline: 3px solid #d8e7d8; border-color: #557d60; }
 button { margin-top: 15px; width: 100%; border: 0; border-radius: 9px; background: #284b38; color: white; font: 600 1rem 'DM Sans', sans-serif; padding: 15px; cursor: pointer; }
 button:hover { background: #1e3c2c; }
@@ -26,3 +28,36 @@ button span { margin-left: 7px; }
 #results.loading, #results.error { color: #64746b; padding: 12px 2px; }
 #results.error { color: #a13c35; }
 @media (max-width: 520px) { main { padding-top: 46px; } form { padding: 19px; } }
+
+/* A warmer, more welcoming finish for the search flow. */
+:root { color: #20372c; background: #f7f6f1; }
+body { background: radial-gradient(ellipse at 86% 5%, #e4eddf 0, transparent 35%), radial-gradient(ellipse at 5% 32%, #f0eadb 0, transparent 28%), #f7f6f1; }
+main { width: min(720px, calc(100% - 40px)); padding-top: clamp(52px, 9vh, 100px); }
+.eyebrow { display: flex; align-items: center; gap: 9px; margin: 0; color: #718574; }
+.eyebrow-mark { color: #b7874d; font-size: 1.15rem; }
+h1 { margin-top: 22px; color: #1d392b; }
+.intro { max-width: 480px; margin-bottom: 34px; font-size: 1.12rem; }
+form { padding: clamp(22px, 5vw, 34px); border-color: #e8e7de; border-radius: 20px; box-shadow: 0 20px 60px #283a2c12, 0 3px 10px #283a2c08; }
+.form-heading { margin: 0 0 24px; padding-bottom: 18px; border-bottom: 1px solid #edf0e9; color: #284b38; font: 600 1.25rem 'Playfair Display', Georgia, serif; }
+label { margin-bottom: 9px; color: #30463a; font-size: .93rem; }
+form > div { margin-bottom: 22px; background: #fcfcfa; }
+select { margin-bottom: 22px; background-color: #fcfcfa; }
+button { min-height: 54px; border-radius: 11px; box-shadow: 0 5px 12px #284b3822; transition: background .18s ease, transform .18s ease, box-shadow .18s ease; }
+button:hover { transform: translateY(-1px); box-shadow: 0 8px 16px #284b3828; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid #b8d1b8; outline-offset: 3px; }
+.disclaimer { margin: 14px 4px 42px; line-height: 1.5; }
+.results-section { margin-top: 30px; padding: 26px; border: 1px solid #e6e8df; border-radius: 18px; background: #ffffffb8; box-shadow: 0 14px 38px #22372c0b; }
+.results-section h2 { color: #284b38; font-size: 1.7rem; }
+.place-card { border-color: #e8e9e1; border-radius: 14px; box-shadow: 0 5px 16px #22372c08; transition: transform .18s ease, box-shadow .18s ease; }
+.place-card:hover { transform: translateY(-2px); box-shadow: 0 10px 22px #22372c12; }
+.place-card h3 { color: #284b38; }
+.place-rent { color: #304c39; }
+.retry-button { display: block; width: auto; min-width: 190px; margin: 24px auto 0; padding: 13px 20px; border: 1px solid #b8c8b8; background: transparent; color: #284b38; box-shadow: none; }
+.retry-button:hover { background: #edf3eb; box-shadow: none; }
+.page-footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid #e5e7df; color: #8b948a; font-size: .8rem; text-align: center; }
+@media (max-width: 520px) {
+  main { padding-top: 42px; }
+  .results-section { padding: 20px; }
+  .retry-button { width: 100%; }
+  .page-footer { margin-top: 42px; }
+}
