@@ -28,7 +28,11 @@ for number in state_codes:
         response = requests.get(
             "https://api.census.gov/data/2024/acs/acs5",
             params={
-                "get": "NAME,B01003_001E,B19013_001E,B25064_001E",
+                "get": (
+                    "NAME,B01003_001E,B19013_001E,B25064_001E,"
+                    "B15003_001E,B15003_027E,B15003_028E,B15003_029E,B15003_030E,"
+                    "B23025_001E,B23025_004E"
+                ),
                 "for": f"state:{number:02d}",
                 "key": api_key,
             },
