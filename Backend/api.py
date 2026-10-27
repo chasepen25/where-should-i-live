@@ -1,48 +1,90 @@
-import flask as f
-import pandas as pd
-import os
-import requests
+"""Run the local housing recommendation demo."""
+
+import csv
+from pathlib import Path
+
+from flask import Flask, jsonify, render_template, request
 
 
-API_key = "97bda4c6b80cd9f9c75a1db2927b64ae53d6391a"
+ROOT_DIR = Path(__file__).resolve().parent.parent
+FRONTEND_DIR = ROOT_DIR / "Frontend"
+CSV_PATH = ROOT_DIR / "state_housing_data.csv"
 
-url = "https://api.census.gov/data/2024/acs/acs5"
+app = Flask(
+    __name__,
+    template_folder=str(FRONTEND_DIR),
+    static_folder=str(FRONTEND_DIR),
+    static_url_path="/static",
+)
 
-params = {
-    "get": "NAME,B25064_001E,B25077_001E,B19013_001E",
-    "for": "state:*",
-    "key": API_key
-}
 
-# Request the data
-response = requests.get(url, params=params, timeout=30)
-response.raise_for_status()
+def load_housing_data():
+    with CSV_PATH.open(newline="", encoding="utf-8") as csv_file:
+        return list(csv.DictReader(csv_file))
 
-# Convert the response into a pandas DataFrame
-data = response.json()
-df = pd.DataFrame(data[1:], columns=data[0])
 
-# Give the columns readable names
-df = df.rename(columns={
-    "NAME": "location",
-    "B25064_001E": "median_monthly_rent",
-    "B25077_001E": "median_home_value",
-    "B19013_001E": "median_household_income"
-})
+@app.get("/")
+def home():
+    return render_template("index.html")
 
-# Convert numeric columns to numbers
-columns = [
-    "median_monthly_rent",
-    "median_home_value",
-    "median_household_income"
-]
 
-for column in columns:
-    df[column] = pd.to_numeric(df[column], errors="coerce")
+@app.get("/states")
+def recommend_states():
+    plan = request.args.get("housing-plan", "rent")
+    if plan not in {"rent", "buy"}:
+        return jsonify(error="Choose whether you plan to rent or buy."), 400
 
-# Display the results
-print(df.head(100))
+    try:
+        budget = float(request.args.get("housing-budget", ""))
+        income = float(request.args.get("household-income", ""))
+    except (TypeError, ValueError):
+        return jsonify(error="Enter a valid housing budget and household income."), 400
+    if budget <= 0 or income <= 0:
+        return jsonify(error="Housing budget and household income must be greater than $0."), 400
 
-# Save the data to a CSV file
-df.to_csv("state_housing_data.csv", index=False)
+    try:
+        rows = load_housing_data()
+    except OSError:
+        app.logger.exception("Could not read the state housing data CSV")
+        return jsonify(error="Housing data file not found."), 500
 
+    if plan == "rent":
+        field = "median_monthly_rent"
+        affordable_limit = min(budget, income * 0.30 / 12)
+        price_label = "median monthly rent"
+    else:
+        field = "median_home_value"
+        affordable_limit = min(budget, income * 3)
+        price_label = "median home value"
+
+    places = []
+    for row in rows:
+        try:
+            amount = float(row[field])
+            median_income = float(row["median_household_income"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if amount <= 0 or median_income <= 0 or amount > affordable_limit:
+            continue
+        places.append(
+            {
+                "city": row["location"],
+                "state": "Statewide estimate",
+                "rent": round(amount),
+                "note": f"2024 ACS 5-year {price_label} estimate",
+            }
+        )
+
+    places.sort(key=lambda place: (place["rent"], place["city"]))
+    return jsonify(
+        {
+            "housing_plan": plan,
+            "housing_budget": budget,
+            "household_income": income,
+            "places": places,
+        }
+    )
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

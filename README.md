@@ -11,7 +11,7 @@ python3 -m pip install -r requirements.txt
 python3 Backend/api.py
 ```
 
-Then open [http://127.0.0.1:5000](http://127.0.0.1:5000). Enter a monthly rent budget and select **Find my places**. Stop the server with `Ctrl+C`.
+Then open [http://127.0.0.1:5000](http://127.0.0.1:5000). Choose whether you plan to rent or buy, enter a housing budget and household income, then select **Find my places**. The demo compares those answers with the 2024 ACS estimates in `state_housing_data.csv`. Stop the server with `Ctrl+C`.
 
 The city rents are illustrative values in `Backend/api.py`, not current market data or listings.
 

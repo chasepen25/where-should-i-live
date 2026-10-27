@@ -46,7 +46,7 @@ function appendRetryButton() {
   results.append(retry);
 }
 
-function renderPlaces(places, budget) {
+function renderPlaces(places, budget, plan) {
   results.replaceChildren();
   results.className = "results-section";
 
@@ -58,7 +58,7 @@ function renderPlaces(places, budget) {
 
   if (!places.length) {
     const empty = document.createElement("p");
-    empty.textContent = `Try a budget below ${money(budget)}? The sample cities start at ${money(1050)} per month.`;
+    empty.textContent = `No state medians fit a ${money(budget)} ${plan === "buy" ? "purchase budget" : "monthly rent budget"} and the income you entered. Try adjusting your budget or income.`;
     results.append(empty);
     appendRetryButton();
     return;
@@ -76,7 +76,7 @@ function renderPlaces(places, budget) {
     state.textContent = place.state;
     const rent = document.createElement("p");
     rent.className = "place-rent";
-    rent.textContent = `${money(place.rent)} / month`;
+    rent.textContent = plan === "buy" ? `${money(place.rent)} median home value` : `${money(place.rent)} / month`;
     const note = document.createElement("span");
     note.className = "place-note";
     note.textContent = place.note;
@@ -109,7 +109,7 @@ form.addEventListener("submit", async (event) => {
     const response = await fetch(`/states?${params}`);
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || "Could not load places.");
-    renderPlaces(data.places, budget);
+    renderPlaces(data.places, budget, answers.get("housing-plan"));
   } catch (error) {
     showMessage(error.message || "Could not connect. Make sure the local app is running.", "error");
   } finally {
